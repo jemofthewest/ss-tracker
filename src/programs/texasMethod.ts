@@ -47,43 +47,39 @@ export const texasMethod3Day: ProgramDefinition = {
 export const texasMethod4Day: ProgramDefinition = {
   id: 'tm_4day',
   name: 'Texas Method (4-Day)',
-  description: 'Upper/Lower split — Volume Lower, Volume Upper, Recovery, Intensity',
-  workoutRotation: ['volume_lower', 'volume_upper', 'recovery', 'intensity'],
+  description: 'Intensity/Volume split — each day pairs an intensity lift with a volume lift',
+  workoutRotation: ['A', 'B', 'volume_lower', 'volume_upper'],
   templates: [
     {
-      variant: 'volume_lower',
-      label: 'Volume Lower (Day 1)',
+      variant: 'A',
+      label: 'Day 1 — Intensity Squat / Volume Cleans',
       exercises: [
+        { exerciseName: 'squat', sets: 1, reps: 5, setType: 'work' },
+        { exerciseName: 'power_clean', sets: 5, reps: 3, setType: 'work', intensityModifier: 0.9 },
+      ],
+    },
+    {
+      variant: 'B',
+      label: 'Day 2 — Intensity Bench / Volume Press',
+      exercises: [
+        { exerciseName: 'bench_press', sets: 1, reps: 5, setType: 'work' },
+        { exerciseName: 'overhead_press', sets: 5, reps: 5, setType: 'work', intensityModifier: 0.9 },
+      ],
+    },
+    {
+      variant: 'volume_lower',
+      label: 'Day 3 — Intensity Deadlift / Volume Squat',
+      exercises: [
+        { exerciseName: 'deadlift', sets: 1, reps: 5, setType: 'work' },
         { exerciseName: 'squat', sets: 5, reps: 5, setType: 'work', intensityModifier: 0.9 },
-        { exerciseName: 'deadlift', sets: 1, reps: 5, setType: 'work', intensityModifier: 0.9 },
       ],
     },
     {
       variant: 'volume_upper',
-      label: 'Volume Upper (Day 2)',
+      label: 'Day 4 — Intensity Press / Volume Bench',
       exercises: [
+        { exerciseName: 'overhead_press', sets: 1, reps: 5, setType: 'work' },
         { exerciseName: 'bench_press', sets: 5, reps: 5, setType: 'work', intensityModifier: 0.9 },
-        { exerciseName: 'overhead_press', sets: 3, reps: 5, setType: 'work', intensityModifier: 0.9 },
-        { exerciseName: 'barbell_row', sets: 3, reps: 5, setType: 'work', intensityModifier: 0.9 },
-      ],
-    },
-    {
-      variant: 'recovery',
-      label: 'Recovery (Day 3)',
-      exercises: [
-        { exerciseName: 'squat', sets: 2, reps: 5, setType: 'work', intensityModifier: 0.8 },
-        { exerciseName: 'overhead_press', sets: 3, reps: 5, setType: 'work', intensityModifier: 0.8 },
-        { exerciseName: 'chin_ups', sets: 3, reps: 0, setType: 'work' },
-        { exerciseName: 'back_extensions', sets: 3, reps: 10, setType: 'work' },
-      ],
-    },
-    {
-      variant: 'intensity',
-      label: 'Intensity (Day 4)',
-      exercises: [
-        { exerciseName: 'squat', sets: 1, reps: 5, setType: 'work' },
-        { exerciseName: 'bench_press', sets: 1, reps: 5, setType: 'work' },
-        { exerciseName: 'deadlift', sets: 1, reps: 5, setType: 'work' },
       ],
     },
   ],
@@ -92,7 +88,7 @@ export const texasMethod4Day: ProgramDefinition = {
     bench_press: { incrementPerSession: 2.5, stallThreshold: 3, resetPercentage: 0.1 },
     deadlift: { incrementPerSession: 5, stallThreshold: 3, resetPercentage: 0.1 },
     overhead_press: { incrementPerSession: 2.5, stallThreshold: 3, resetPercentage: 0.1 },
-    barbell_row: { incrementPerSession: 5, stallThreshold: 3, resetPercentage: 0.1 },
+    power_clean: { incrementPerSession: 5, stallThreshold: 3, resetPercentage: 0.1 },
   },
   warmupProtocol: 'starting_strength',
 };

@@ -199,8 +199,20 @@ export const useWorkoutStore = create<AppState & Actions>()(
         let newFailures = state.failureCounts;
 
         if (program) {
+          // Only run progression on exercises without an intensityModifier
+          // (i.e., intensity/PR exercises, not volume or recovery work)
+          const template = program.templates.find((t) => t.variant === completedSession.variant);
+          const intensityExerciseNames = new Set(
+            template?.exercises
+              .filter((rx) => !rx.intensityModifier)
+              .map((rx) => rx.exerciseName) ?? [],
+          );
+          const exercisesForProgression = completedSession.exercises.filter(
+            (ex) => intensityExerciseNames.has(ex.exerciseName),
+          );
+
           const result = processWorkoutProgression(
-            completedSession.exercises,
+            exercisesForProgression,
             state.workingWeights,
             state.failureCounts,
             program.progressionRules,
