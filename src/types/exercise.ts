@@ -5,6 +5,8 @@ export type ExerciseName =
   | 'overhead_press'
   | 'power_clean'
   | 'barbell_row'
+  | 'rdl'
+  | 'sldl'
   | 'chin_ups'
   | 'back_extensions';
 
@@ -15,6 +17,8 @@ export const EXERCISE_LABELS: Record<ExerciseName, string> = {
   overhead_press: 'Overhead Press',
   power_clean: 'Power Clean',
   barbell_row: 'Barbell Row',
+  rdl: 'Romanian Deadlift',
+  sldl: 'Stiff-Leg Deadlift',
   chin_ups: 'Chin-ups',
   back_extensions: 'Back Extensions',
 };

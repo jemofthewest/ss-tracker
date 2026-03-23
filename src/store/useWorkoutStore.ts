@@ -58,6 +58,8 @@ const DEFAULT_WEIGHTS: Record<string, number> = {
   overhead_press: 45,
   power_clean: 45,
   barbell_row: 45,
+  rdl: 45,
+  sldl: 45,
 };
 
 function generateSession(
