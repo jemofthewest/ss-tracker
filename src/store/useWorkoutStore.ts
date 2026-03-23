@@ -37,6 +37,7 @@ interface Actions {
   setWorkingWeight: (exercise: ExerciseName, weight: number) => void;
   changeProgram: (programId: string) => void;
   updateSettings: (settings: Partial<AppSettings>) => void;
+  updateExerciseWeight: (exerciseId: string, newWeight: number, alsoUpdateWorkingWeight: boolean) => void;
   addExerciseNote: (exerciseId: string, note: string) => void;
   addSessionNote: (note: string) => void;
   deleteSession: (sessionId: string) => void;
@@ -237,6 +238,37 @@ export const useWorkoutStore = create<AppState & Actions>()(
         set((state) => ({
           settings: { ...state.settings, ...newSettings },
         }));
+      },
+
+      updateExerciseWeight: (exerciseId, newWeight, alsoUpdateWorkingWeight) => {
+        set((state) => {
+          if (!state.activeSession) return state;
+          const exercise = state.activeSession.exercises.find((ex) => ex.id === exerciseId);
+          if (!exercise) return state;
+
+          const updatedWeights = alsoUpdateWorkingWeight
+            ? { ...state.workingWeights, [exercise.exerciseName]: newWeight }
+            : state.workingWeights;
+
+          return {
+            workingWeights: updatedWeights,
+            activeSession: {
+              ...state.activeSession,
+              exercises: state.activeSession.exercises.map((ex) =>
+                ex.id === exerciseId
+                  ? {
+                      ...ex,
+                      sets: ex.sets.map((s) =>
+                        s.type === 'work' && !s.completed
+                          ? { ...s, prescribedWeight: newWeight }
+                          : s,
+                      ),
+                    }
+                  : ex,
+              ),
+            },
+          };
+        });
       },
 
       addExerciseNote: (exerciseId, note) => {

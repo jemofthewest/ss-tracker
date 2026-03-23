@@ -3,6 +3,8 @@ import { useWorkoutStore } from '../../store/useWorkoutStore';
 import { getProgramById } from '../../programs';
 import { ExerciseCard } from './ExerciseCard';
 import { EXERCISE_LABELS } from '../../types';
+import type { ExerciseName } from '../../types';
+import { WeightInput } from '../shared/WeightInput';
 
 export function WorkoutView() {
   const {
@@ -14,10 +16,13 @@ export function WorkoutView() {
     uncompleteSet,
     finishWorkout,
     abandonWorkout,
+    setWorkingWeight,
+    updateExerciseWeight,
   } = useWorkoutStore();
 
   const [showResets, setShowResets] = useState<string[] | null>(null);
   const [confirmAbandon, setConfirmAbandon] = useState(false);
+  const [editingWeight, setEditingWeight] = useState<string | null>(null);
 
   const program = getProgramById(activeProgramId);
 
@@ -34,6 +39,7 @@ export function WorkoutView() {
             <div className="space-y-1">
               <h3 className="text-xs font-semibold text-gray-400 uppercase tracking-wide">
                 Current Working Weights
+                <span className="normal-case font-normal ml-1">(tap to edit)</span>
               </h3>
               {Object.entries(workingWeights)
                 .filter(([name]) =>
@@ -42,11 +48,26 @@ export function WorkoutView() {
                   ),
                 )
                 .map(([name, weight]) => (
-                  <div key={name} className="flex justify-between text-sm">
-                    <span className="text-gray-600">
-                      {EXERCISE_LABELS[name as keyof typeof EXERCISE_LABELS] ?? name}
-                    </span>
-                    <span className="font-semibold text-gray-900">{weight} lbs</span>
+                  <div key={name}>
+                    <button
+                      onClick={() => setEditingWeight(editingWeight === name ? null : name)}
+                      className="w-full flex justify-between items-center text-sm py-1.5 px-1 -mx-1 rounded-lg active:bg-gray-50 transition-colors"
+                    >
+                      <span className="text-gray-600">
+                        {EXERCISE_LABELS[name as keyof typeof EXERCISE_LABELS] ?? name}
+                      </span>
+                      <span className="font-semibold text-gray-900">{weight} lbs</span>
+                    </button>
+                    {editingWeight === name && (
+                      <div className="py-2">
+                        <WeightInput
+                          value={weight}
+                          onChange={(v) => setWorkingWeight(name as ExerciseName, v)}
+                          increment={2.5}
+                          min={0}
+                        />
+                      </div>
+                    )}
                   </div>
                 ))}
             </div>
@@ -100,6 +121,9 @@ export function WorkoutView() {
           exercise={exercise}
           onCompleteSet={(setId, w, r) => completeSet(exercise.id, setId, w, r)}
           onUncompleteSet={(setId) => uncompleteSet(exercise.id, setId)}
+          onUpdateWeight={(newWeight, alsoUpdateWorking) =>
+            updateExerciseWeight(exercise.id, newWeight, alsoUpdateWorking)
+          }
         />
       ))}
 
